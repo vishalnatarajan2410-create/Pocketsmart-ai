@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Party Budget Planner - PocketSmart AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/dashboard" class="nav-brand">
+      <i class="fa-solid fa-wallet text-sky-400"></i>
+      <span>Pocket<span class="logo-smart">Smart</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+      <li><a href="/home-planner" class="nav-link"><i class="fa-solid fa-couch"></i> Home Planner</a></li>
+      <li><a href="/party-planner" class="nav-link active"><i class="fa-solid fa-champagne-glasses"></i> Party Planner</a></li>
+      <li><a href="/jewelry-planner" class="nav-link"><i class="fa-solid fa-gem"></i> Jewelry Planner</a></li>
+      <li><a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user"></i> {{ user.username }}</span>
+      <a href="/logout" class="btn-nav-signin"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-hero" style="background: linear-gradient(135deg, #312e81 0%, #4c1d95 50%, #7c3aed 100%);">
+    <h1>Party Budget Planner</h1>
+    <p>Plan your perfect event with AI-powered budget recommendations across catering, decor, and venues</p>
+  </header>
+
+  <!-- Form Container -->
+  <div class="main-content" style="padding-top: 1.5rem;">
+    <div class="form-card-container">
+      <div class="planner-form-card">
+        
+        <form id="partyPlannerForm">
+          
+          <!-- Section 1: Basic Information -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-coins text-purple-600"></i> Basic Information</h3>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="totalBudget">Total Budget (₹)</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-indian-rupee-sign"></i>
+                  <input type="number" id="totalBudget" name="total_budget" class="form-input" placeholder="e.g. 25000" min="1000" step="500" value="25000" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numGuests"><i class="fa-solid fa-users text-purple-500"></i> Number of Guests</label>
+                <input type="number" id="numGuests" name="num_guests" class="form-input" min="1" max="1000" value="15" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Event Details -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-calendar-check text-purple-600"></i> Event Details</h3>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="partyType">Party Type</label>
+                <select id="partyType" name="party_type" class="form-select">
+                  <option value="Birthday" selected>Birthday</option>
+                  <option value="Wedding">Wedding</option>
+                  <option value="Anniversary">Anniversary</option>
+                  <option value="Corporate Event">Corporate Event</option>
+                  <option value="Housewarming">Housewarming</option>
+                  <option value="Cocktail / Dinner Party">Cocktail / Dinner Party</option>
+                  <option value="Farewell Party">Farewell Party</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="venueType">Venue Type</label>
+                <select id="venueType" name="venue_type" class="form-select">
+                  <option value="Home" selected>Home</option>
+                  <option value="Banquet Hall">Banquet Hall</option>
+                  <option value="Resort / Lawn">Resort / Lawn</option>
+                  <option value="Rooftop Lounge">Rooftop Lounge</option>
+                  <option value="Hotel Conference Room">Hotel Conference Room</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Party Needs -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-list-check text-purple-600"></i> Party Needs</h3>
+            <div class="checkbox-group">
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="needCatering" name="needs_catering" checked>
+                <span><i class="fa-solid fa-utensils text-orange-500"></i> Catering</span>
+              </label>
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="needDecoration" name="needs_decoration" checked>
+                <span><i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i> Decoration</span>
+              </label>
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="needEntertainment" name="needs_entertainment" checked>
+                <span><i class="fa-solid fa-music text-indigo-500"></i> Entertainment</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section 4: Additional Requirements -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-circle-info text-purple-600"></i> Additional Requirements</h3>
+            <div class="form-group">
+              <label class="form-label" for="additionalReqs">Special Requests or Themes</label>
+              <textarea id="additionalReqs" name="additional_requirements" class="form-textarea" rows="3" placeholder="Special requests, themes, dietary restrictions, DJ/music preference, etc..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit-action" style="background: linear-gradient(135deg, #4c1d95, #7c3aed);">
+            <span id="btnText"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Party Budget Plan</span>
+            <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Results Display Section -->
+    <section id="resultsSection" class="results-section">
+      <div class="results-card">
+        
+        <div class="results-header-bar" style="background: linear-gradient(135deg, #4c1d95, #7c3aed);">
+          <div class="results-title">
+            <i class="fa-solid fa-champagne-glasses"></i> Your Party Budget Plan
+          </div>
+          <button onclick="window.print()" class="btn-print-plan">
+            <i class="fa-solid fa-print"></i> Print / Save
+          </button>
+        </div>
+
+        <div class="results-body">
+          
+          <!-- Summary Banner -->
+          <div class="budget-summary-banner" style="background: #faf5ff; border-color: #e9d5ff;">
+            <div class="budget-pill">
+              <span class="budget-pill-label" style="color: #6b21a8;">Total Budget</span>
+              <span class="budget-pill-value" style="color: #581c87;" id="resTotalBudget">₹0.00</span>
+            </div>
+            <div class="budget-pill">
+              <span class="budget-pill-label" style="color: #6b21a8;">Remaining Budget</span>
+              <span class="budget-pill-value remaining" id="resRemainingBudget">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Category Breakdown Container -->
+          <div id="categoriesContainer"></div>
+
+          <!-- Venue Suggestions Box -->
+          <div id="venueSuggestionsContainer" style="margin-bottom: 2rem;"></div>
+
+          <!-- Calculation Table -->
+          <div class="calc-table-card">
+            <h4 class="calc-table-title"><i class="fa-solid fa-table-list"></i> Cost Allocation Table</h4>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Quantity / Count</th>
+                  <th>Total Cost (₹)</th>
+                  <th>Budget Share (%)</th>
+                </tr>
+              </thead>
+              <tbody id="calcTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Additional Suggestions -->
+          <div class="suggestions-box" style="background: #faf5ff; border-color: #e9d5ff;" id="suggestionsBox">
+            <h4 class="suggestions-title" style="color: #6b21a8;"><i class="fa-solid fa-lightbulb"></i> Event Planning & Cost-Saving Tips</h4>
+            <ul class="suggestions-list" id="suggestionsList"></ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 3rem; padding: 1.5rem;">
+    <div class="footer-bottom" style="border-top: none; padding: 0;">
+      <p>&copy; 2026 PocketSmart AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle checkbox cards
+    document.querySelectorAll('.checkbox-card input[type="checkbox"]').forEach(chk => {
+      chk.addEventListener('change', function() {
+        if (this.checked) {
+          this.closest('.checkbox-card').classList.add('checked');
+        } else {
+          this.closest('.checkbox-card').classList.remove('checked');
+        }
+      });
+    });
+
+    const form = document.getElementById('partyPlannerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const resultsSection = document.getElementById('resultsSection');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      submitBtn.disabled = true;
+
+      const payload = {
+        total_budget: parseFloat(document.getElementById('totalBudget').value),
+        num_guests: parseInt(document.getElementById('numGuests').value) || 1,
+        party_type: document.getElementById('partyType').value,
+        venue_type: document.getElementById('venueType').value,
+        needs_catering: document.getElementById('needCatering').checked,
+        needs_decoration: document.getElementById('needDecoration').checked,
+        needs_entertainment: document.getElementById('needEntertainment').checked,
+        additional_requirements: document.getElementById('additionalReqs').value
+      };
+
+      try {
+        const response = await fetch('/generate-party', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate party recommendations');
+        }
+
+        const data = await response.json();
+        renderResults(data);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btnText.style.display = 'inline-flex';
+        btnSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+
+    function renderResults(data) {
+      document.getElementById('resTotalBudget').textContent = '₹' + (data.total_budget || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('resRemainingBudget').textContent = '₹' + (data.remaining_budget || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+      // Render Categories & Items
+      const catContainer = document.getElementById('categoriesContainer');
+      catContainer.innerHTML = '';
+
+      if (data.budget_breakdown && data.budget_breakdown.length > 0) {
+        data.budget_breakdown.forEach(cat => {
+          const block = document.createElement('div');
+          block.className = 'category-block';
+
+          let itemsHtml = '';
+          (cat.items || []).forEach(item => {
+            let linksHtml = '';
+            if (item.shopping_links) {
+              for (const [store, link] of Object.entries(item.shopping_links)) {
+                let icon = 'fa-solid fa-arrow-up-right-from-square';
+                if (store === 'swiggy') icon = 'fa-solid fa-bowl-food';
+                else if (store === 'zomato') icon = 'fa-solid fa-utensils';
+                else if (store === 'amazon') icon = 'fa-brands fa-amazon';
+                else if (store === 'flipkart') icon = 'fa-solid fa-bag-shopping';
+                else if (store === 'oyorooms') icon = 'fa-solid fa-hotel';
+                else if (store === 'bookmyshow') icon = 'fa-solid fa-ticket';
+
+                linksHtml += `<a href="${link}" target="_blank" rel="noopener noreferrer" class="shop-btn ${store}"><i class="${icon}"></i> ${store.toUpperCase()}</a>`;
+              }
+            }
+
+            itemsHtml += `
+              <div class="item-row">
+                <div class="item-info">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-desc">${item.description}</div>
+                  <div class="shopping-links-group">
+                    ${linksHtml}
+                  </div>
+                </div>
+                <div class="item-meta">
+                  <span class="item-qty-tag">Qty: ${item.quantity || 1}</span>
+                  <span class="item-price-tag">₹${(item.estimated_price || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+            `;
+          });
+
+          block.innerHTML = `
+            <div class="category-block-header">
+              <div class="category-block-title"><i class="fa-solid fa-layer-group text-purple-600"></i> ${cat.category}</div>
+              <div class="category-allocation-badge">Allocation: ₹${(cat.allocation || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="items-list">
+              ${itemsHtml}
+            </div>
+          `;
+          catContainer.appendChild(block);
+        });
+      }
+
+      // Render Venue Suggestions
+      const venueContainer = document.getElementById('venueSuggestionsContainer');
+      venueContainer.innerHTML = '';
+      if (data.venue_suggestions && data.venue_suggestions.length > 0) {
+        let venueHtml = `
+          <div class="category-block" style="border-left: 4px solid #8b5cf6;">
+            <div class="category-block-header">
+              <div class="category-block-title"><i class="fa-solid fa-location-dot text-purple-600"></i> Venue Options & Booking</div>
+            </div>
+            <div class="items-list">
+        `;
+        data.venue_suggestions.forEach(v => {
+          let linksHtml = '';
+          if (v.shopping_links) {
+            for (const [store, link] of Object.entries(v.shopping_links)) {
+              linksHtml += `<a href="${link}" target="_blank" rel="noopener noreferrer" class="shop-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${store.toUpperCase()}</a>`;
+            }
+          }
+          venueHtml += `
+            <div class="item-row">
+              <div class="item-info">
+                <div class="item-name">${v.name} (${v.type})</div>
+                <div class="item-desc">Capacity: ${v.capacity || 'Flexible'} &bull; Estimated Cost: ₹${(v.estimated_cost || 0).toLocaleString('en-IN')}</div>
+                <div class="shopping-links-group">${linksHtml}</div>
+              </div>
+            </div>
+          `;
+        });
+        venueHtml += `</div></div>`;
+        venueContainer.innerHTML = venueHtml;
+      }
+
+      // Render Calculation Table
+      const tableBody = document.getElementById('calcTableBody');
+      tableBody.innerHTML = '';
+      const calcData = data.calculation_table_inr || data.calculation_table || [];
+      calcData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${row.category}</strong></td>
+          <td>${row.items_count}</td>
+          <td>₹${(row.total_cost || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+          <td><span style="background: #f3e8ff; color: #7e22ce; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">${row.percentage_of_budget}%</span></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      // Render Suggestions
+      const suggestionsList = document.getElementById('suggestionsList');
+      suggestionsList.innerHTML = '';
+      (data.additional_suggestions || []).forEach(tip => {
+        const li = document.createElement('li');
+        li.innerHTML = `<i class="fa-solid fa-circle-check text-purple-600"></i> <span>${tip}</span>`;
+        suggestionsList.appendChild(li);
+      });
+
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

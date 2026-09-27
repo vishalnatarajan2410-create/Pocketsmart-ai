@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Interior Budget Planner - PocketSmart AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/dashboard" class="nav-brand">
+      <i class="fa-solid fa-wallet text-sky-400"></i>
+      <span>Pocket<span class="logo-smart">Smart</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+      <li><a href="/home-planner" class="nav-link active"><i class="fa-solid fa-couch"></i> Home Planner</a></li>
+      <li><a href="/party-planner" class="nav-link"><i class="fa-solid fa-champagne-glasses"></i> Party Planner</a></li>
+      <li><a href="/jewelry-planner" class="nav-link"><i class="fa-solid fa-gem"></i> Jewelry Planner</a></li>
+      <li><a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user"></i> {{ user.username }}</span>
+      <a href="/logout" class="btn-nav-signin"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-hero">
+    <h1>Home Interior Budget Planner</h1>
+    <p>Create a customized budget plan for your dream home interior with AI-powered allocations</p>
+  </header>
+
+  <!-- Form Container -->
+  <div class="main-content" style="padding-top: 1.5rem;">
+    <div class="form-card-container">
+      <div class="planner-form-card">
+        
+        <form id="homePlannerForm">
+          
+          <!-- Section 1: Budget Details -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-indian-rupee-sign"></i> Budget Details</h3>
+            <div class="form-group">
+              <label class="form-label" for="totalBudget">Total Budget (₹)</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+                <input type="number" id="totalBudget" name="total_budget" class="form-input" placeholder="e.g. 50000" min="1000" step="500" value="50000" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Fixtures & Furniture -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-couch"></i> Fixtures & Furniture</h3>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="numLights"><i class="fa-solid fa-lightbulb text-amber-500"></i> Number of Lights/Fixtures</label>
+                <input type="number" id="numLights" name="num_lights" class="form-input" min="0" max="50" value="5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numFans"><i class="fa-solid fa-fan text-sky-500"></i> Number of Ceiling Fans</label>
+                <input type="number" id="numFans" name="num_fans" class="form-input" min="0" max="20" value="4" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numFurniture"><i class="fa-solid fa-chair text-indigo-500"></i> Number of Furniture Pieces</label>
+                <input type="number" id="numFurniture" name="num_furniture" class="form-input" min="0" max="20" value="2" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numDining"><i class="fa-solid fa-utensils text-emerald-500"></i> Number of Dining Tables</label>
+                <input type="number" id="numDining" name="num_dining_tables" class="form-input" min="0" max="10" value="1" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Rooms to Include -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-door-open"></i> Rooms to Include</h3>
+            <div class="checkbox-group">
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="roomLiving" name="has_living_room" checked>
+                <span><i class="fa-solid fa-tv"></i> Living Room</span>
+              </label>
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="roomKitchen" name="has_kitchen" checked>
+                <span><i class="fa-solid fa-kitchen-set"></i> Kitchen</span>
+              </label>
+              <label class="checkbox-card checked">
+                <input type="checkbox" id="roomBedroom" name="has_bedroom" checked>
+                <span><i class="fa-solid fa-bed"></i> Bedroom</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section 4: Additional Information -->
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa-solid fa-circle-info"></i> Additional Information</h3>
+            <div class="form-group">
+              <label class="form-label" for="additionalReqs">Special Requirements or Preferences</label>
+              <textarea id="additionalReqs" name="additional_requirements" class="form-textarea" rows="3" placeholder="Any specific requirements or preferences (e.g. minimalist design, warm amber lighting, wooden teak finish)..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit-action">
+            <span id="btnText"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Recommendations</span>
+            <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Results Display Section -->
+    <section id="resultsSection" class="results-section">
+      <div class="results-card">
+        
+        <div class="results-header-bar">
+          <div class="results-title">
+            <i class="fa-solid fa-sparkles"></i> Your Personalized Budget Plan
+          </div>
+          <button onclick="window.print()" class="btn-print-plan">
+            <i class="fa-solid fa-print"></i> Print / Save
+          </button>
+        </div>
+
+        <div class="results-body">
+          
+          <!-- Summary Banner -->
+          <div class="budget-summary-banner">
+            <div class="budget-pill">
+              <span class="budget-pill-label">Total Budget</span>
+              <span class="budget-pill-value" id="resTotalBudget">₹0.00</span>
+            </div>
+            <div class="budget-pill">
+              <span class="budget-pill-label">Remaining Budget</span>
+              <span class="budget-pill-value remaining" id="resRemainingBudget">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Category Breakdown Container -->
+          <div id="categoriesContainer"></div>
+
+          <!-- Calculation Table -->
+          <div class="calc-table-card">
+            <h4 class="calc-table-title"><i class="fa-solid fa-table-list"></i> Budget Allocation Table</h4>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Quantity / Count</th>
+                  <th>Total Cost (₹)</th>
+                  <th>Budget Share (%)</th>
+                </tr>
+              </thead>
+              <tbody id="calcTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Additional Suggestions -->
+          <div class="suggestions-box" id="suggestionsBox">
+            <h4 class="suggestions-title"><i class="fa-solid fa-lightbulb"></i> Additional Suggestions & Smart Tips</h4>
+            <ul class="suggestions-list" id="suggestionsList"></ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 3rem; padding: 1.5rem;">
+    <div class="footer-bottom" style="border-top: none; padding: 0;">
+      <p>&copy; 2026 PocketSmart AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle active state on checkbox cards
+    document.querySelectorAll('.checkbox-card input[type="checkbox"]').forEach(chk => {
+      chk.addEventListener('change', function() {
+        if (this.checked) {
+          this.closest('.checkbox-card').classList.add('checked');
+        } else {
+          this.closest('.checkbox-card').classList.remove('checked');
+        }
+      });
+    });
+
+    const form = document.getElementById('homePlannerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const resultsSection = document.getElementById('resultsSection');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      submitBtn.disabled = true;
+
+      const payload = {
+        total_budget: parseFloat(document.getElementById('totalBudget').value),
+        num_lights: parseInt(document.getElementById('numLights').value) || 0,
+        num_fans: parseInt(document.getElementById('numFans').value) || 0,
+        num_furniture: parseInt(document.getElementById('numFurniture').value) || 0,
+        num_dining_tables: parseInt(document.getElementById('numDining').value) || 0,
+        has_living_room: document.getElementById('roomLiving').checked,
+        has_kitchen: document.getElementById('roomKitchen').checked,
+        has_bedroom: document.getElementById('roomBedroom').checked,
+        additional_requirements: document.getElementById('additionalReqs').value
+      };
+
+      try {
+        const response = await fetch('/generate-home', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate recommendations');
+        }
+
+        const data = await response.json();
+        renderResults(data);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btnText.style.display = 'inline-flex';
+        btnSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+
+    function renderResults(data) {
+      document.getElementById('resTotalBudget').textContent = '₹' + (data.total_budget || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('resRemainingBudget').textContent = '₹' + (data.remaining_budget || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+      // Render Categories & Items
+      const catContainer = document.getElementById('categoriesContainer');
+      catContainer.innerHTML = '';
+
+      if (data.budget_breakdown && data.budget_breakdown.length > 0) {
+        data.budget_breakdown.forEach(cat => {
+          const block = document.createElement('div');
+          block.className = 'category-block';
+
+          let itemsHtml = '';
+          (cat.items || []).forEach(item => {
+            let linksHtml = '';
+            if (item.shopping_links) {
+              for (const [store, link] of Object.entries(item.shopping_links)) {
+                let icon = 'fa-solid fa-cart-shopping';
+                if (store === 'amazon') icon = 'fa-brands fa-amazon';
+                else if (store === 'flipkart') icon = 'fa-solid fa-bag-shopping';
+                else if (store === 'ikea') icon = 'fa-solid fa-couch';
+                linksHtml += `<a href="${link}" target="_blank" rel="noopener noreferrer" class="shop-btn ${store}"><i class="${icon}"></i> ${store.toUpperCase()}</a>`;
+              }
+            }
+
+            itemsHtml += `
+              <div class="item-row">
+                <div class="item-info">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-desc">${item.description}</div>
+                  <div class="shopping-links-group">
+                    ${linksHtml}
+                  </div>
+                </div>
+                <div class="item-meta">
+                  <span class="item-qty-tag">Qty: ${item.quantity}</span>
+                  <span class="item-price-tag">₹${(item.estimated_price || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+            `;
+          });
+
+          block.innerHTML = `
+            <div class="category-block-header">
+              <div class="category-block-title"><i class="fa-solid fa-layer-group text-blue-600"></i> ${cat.category}</div>
+              <div class="category-allocation-badge">Allocation: ₹${(cat.allocation || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="items-list">
+              ${itemsHtml}
+            </div>
+          `;
+          catContainer.appendChild(block);
+        });
+      }
+
+      // Render Calculation Table
+      const tableBody = document.getElementById('calcTableBody');
+      tableBody.innerHTML = '';
+      const calcData = data.calculation_table || [];
+      calcData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${row.category}</strong></td>
+          <td>${row.items_count}</td>
+          <td>₹${(row.total_cost || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+          <td><span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">${row.percentage_of_budget}%</span></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      // Render Suggestions
+      const suggestionsList = document.getElementById('suggestionsList');
+      suggestionsList.innerHTML = '';
+      (data.additional_suggestions || []).forEach(tip => {
+        const li = document.createElement('li');
+        li.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${tip}</span>`;
+        suggestionsList.appendChild(li);
+      });
+
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

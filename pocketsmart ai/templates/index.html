@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PocketSmart AI - Smart Budget & Recommendation Assistant</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <i class="fa-solid fa-wallet text-sky-400"></i>
+      <span>Pocket<span class="logo-smart">Smart</span></span>
+      <span class="brand-badge">AI 1.5 PRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#features" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> Features</a></li>
+      <li><a href="#testimonials" class="nav-link"><i class="fa-solid fa-comments"></i> Testimonials</a></li>
+      {% if user %}
+        <li><a href="/dashboard" class="nav-link"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+        <li><a href="/home-planner" class="nav-link"><i class="fa-solid fa-couch"></i> Home Planner</a></li>
+        <li><a href="/party-planner" class="nav-link"><i class="fa-solid fa-cake-candles"></i> Party Planner</a></li>
+        <li><a href="/jewelry-planner" class="nav-link"><i class="fa-solid fa-gem"></i> Jewelry Planner</a></li>
+        <li><a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+      {% endif %}
+    </ul>
+
+    <div class="nav-actions">
+      {% if user %}
+        <span style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-user-circle"></i> {{ user.username }}</span>
+        <a href="/logout" class="btn-nav-signin"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      {% else %}
+        <a href="/login" class="btn-nav-signin">Sign In</a>
+        <a href="/register" class="btn-nav-signup">Get Started</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1 class="hero-title">PocketSmart</h1>
+    <h2 style="font-size: 1.8rem; color: #bfdbfe; font-weight: 600; margin-bottom: 0.75rem;">AI-Powered Budget Planning for Everyday Needs</h2>
+    <p class="hero-subtitle">
+      Make smarter financial decisions with personalized budget recommendations for home interiors, parties, and jewelry purchases. Our AI helps you get the most value for your money.
+    </p>
+    <div class="hero-buttons">
+      {% if user %}
+        <a href="/dashboard" class="btn-hero-primary"><i class="fa-solid fa-gauge"></i> Go to Dashboard</a>
+      {% else %}
+        <a href="/register" class="btn-hero-primary"><i class="fa-solid fa-rocket"></i> Get Started</a>
+        <a href="#features" class="btn-hero-secondary"><i class="fa-solid fa-circle-info"></i> Learn More</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content" id="features">
+    <div class="section-header">
+      <h2 class="section-title">Our Smart Budget Planners</h2>
+      <p class="section-desc">Discover how PocketSmart helps you make better financial decisions across different areas of your life.</p>
+    </div>
+
+    <!-- Planners Grid -->
+    <div class="planners-grid">
+      
+      <!-- Home Planner Card -->
+      <div class="planner-card home">
+        <div class="planner-card-banner home-banner">
+          <i class="fa-solid fa-couch"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-house"></i> Home Interior Budget Planner</h3>
+          <p class="planner-card-desc">
+            Get personalized recommendations for furniture, lighting, and decor that fit your style preferences and budget constraints. Our AI helps you create a beautiful space without overspending across IKEA, Amazon, and Flipkart.
+          </p>
+          <a href="{% if user %}/home-planner{% else %}/login{% endif %}" class="btn-card-action">
+            Get Started <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem; margin-left: 0.3rem;"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Party Planner Card -->
+      <div class="planner-card party">
+        <div class="planner-card-banner party-banner">
+          <i class="fa-solid fa-champagne-glasses"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-masks-theater"></i> Party Budget Planner</h3>
+          <p class="planner-card-desc">
+            Plan your perfect event with smart budget allocations for venue, catering, decorations, and entertainment. Our AI suggests the best ways to create memorable events while staying within your budget using Swiggy, Zomato, and OYO.
+          </p>
+          <a href="{% if user %}/party-planner{% else %}/login{% endif %}" class="btn-card-action">
+            Get Started <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem; margin-left: 0.3rem;"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Jewelry Planner Card -->
+      <div class="planner-card jewelry">
+        <div class="planner-card-banner jewelry-banner">
+          <i class="fa-solid fa-gem"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-sparkles"></i> Jewelry Budget Planner</h3>
+          <p class="planner-card-desc">
+            Find the ideal jewelry pieces for any occasion that match your outfit and budget. Our AI recommends options based on your style preferences, occasion, and available budget from Tanishq, CaratLane, and Bluestone.
+          </p>
+          <a href="{% if user %}/jewelry-planner{% else %}/login{% endif %}" class="btn-card-action">
+            Get Started <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem; margin-left: 0.3rem;"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <h2 class="section-title">What Our Users Say</h2>
+        <p class="section-desc">Real experiences from people who have transformed their financial planning with PocketSmart.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"PocketSmart helped me furnish my new apartment without breaking the bank. The recommendations were spot on and I saved nearly 30% of my original budget!"</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background: #dbeafe; color: #1e40af;">SK</div>
+            <div>
+              <div class="author-name">Sarah K.</div>
+              <div class="author-role">Home Owner</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Planning my daughter's birthday party was so much easier with PocketSmart's budget breakdown. The AI suggestions for affordable decorations and catering options were fantastic."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background: #ede9fe; color: #6d28d9;">MR</div>
+            <div>
+              <div class="author-name">Michael R.</div>
+              <div class="author-role">Parent</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"The jewelry recommendations perfectly matched my outfit for the wedding. Saved me hours of searching and I received so many compliments on my accessories!"</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background: #fce7f3; color: #be185d;">PM</div>
+            <div>
+              <div class="author-name">Priya M.</div>
+              <div class="author-role">Fashion Enthusiast</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="cta-banner">
+      <h2>Ready to Optimize Your Budget?</h2>
+      <p>Join PocketSmart today and start making smarter financial decisions across all areas of your life.</p>
+      <div class="cta-buttons">
+        {% if user %}
+          <a href="/dashboard" class="btn-cta-light">Go to Dashboard</a>
+        {% else %}
+          <a href="/login" class="btn-cta-outline">Sign In</a>
+          <a href="/register" class="btn-cta-light">Create Account</a>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>PocketSmart</h3>
+        <p>AI-powered budget planning tools to help you make smarter financial decisions every day.</p>
+        <div class="footer-socials">
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/home-planner">Home Planner</a></li>
+          <li><a href="/party-planner">Party Planner</a></li>
+          <li><a href="/jewelry-planner">Jewelry Planner</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 PocketSmart AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

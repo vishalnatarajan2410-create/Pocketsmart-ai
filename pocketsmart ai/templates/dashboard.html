@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - PocketSmart AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/dashboard" class="nav-brand">
+      <i class="fa-solid fa-wallet text-sky-400"></i>
+      <span>Pocket<span class="logo-smart">Smart</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/home-planner" class="nav-link"><i class="fa-solid fa-couch"></i> Home Planner</a></li>
+      <li><a href="/party-planner" class="nav-link"><i class="fa-solid fa-champagne-glasses"></i> Party Planner</a></li>
+      <li><a href="/jewelry-planner" class="nav-link"><i class="fa-solid fa-gem"></i> Jewelry Planner</a></li>
+      <li><a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user"></i> {{ user.full_name or user.username }}</span>
+      <a href="/logout" class="btn-nav-signin"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Welcome Banner -->
+  <section class="welcome-banner" style="margin: 2rem auto 0; max-width: 1200px; text-align: center;">
+    <h1>Welcome, {{ user.full_name or user.username }}!</h1>
+    <p>Choose a budget planner to get started with your personalized financial planning experience</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content" style="padding-top: 1.5rem;">
+
+    <!-- 3 Planners Cards -->
+    <div class="planners-grid" style="margin-bottom: 2rem;">
+      
+      <!-- Home Planner -->
+      <div class="planner-card home">
+        <div class="planner-card-banner home-banner">
+          <i class="fa-solid fa-couch"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-house"></i> Home Budget Planner</h3>
+          <p class="planner-card-desc">
+            Plan your interior design budget efficiently with AI-powered recommendations for furniture, lighting, fans, and more.
+          </p>
+          <a href="/home-planner" class="btn-card-action">Get Started</a>
+        </div>
+      </div>
+
+      <!-- Party Planner -->
+      <div class="planner-card party">
+        <div class="planner-card-banner party-banner">
+          <i class="fa-solid fa-champagne-glasses"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-masks-theater"></i> Party Budget Planner</h3>
+          <p class="planner-card-desc">
+            Plan your perfect event with budget allocations for venue, catering, decorations, and entertainment services.
+          </p>
+          <a href="/party-planner" class="btn-card-action">Get Started</a>
+        </div>
+      </div>
+
+      <!-- Jewelry Planner -->
+      <div class="planner-card jewelry">
+        <div class="planner-card-banner jewelry-banner">
+          <i class="fa-solid fa-gem"></i>
+        </div>
+        <div class="planner-card-body">
+          <h3 class="planner-card-title"><i class="fa-solid fa-sparkles"></i> Jewelry Budget Planner</h3>
+          <p class="planner-card-desc">
+            Find the ideal jewelry pieces for any occasion that match your outfit and style within your specified budget.
+          </p>
+          <a href="/jewelry-planner" class="btn-card-action">Get Started</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- View All History Button Bar -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <a href="/history" class="btn-hero-primary" style="background: #e0f2fe; color: #0284c7; border: 1.5px solid #bae6fd; font-weight: 700; box-shadow: none;">
+        <i class="fa-solid fa-clock-rotate-left"></i> View All Recommendation History
+      </a>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div style="background: #ffffff; border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+      <h3 style="font-size: 1.2rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; color: #1e293b;">
+        <i class="fa-solid fa-chart-line" style="color: #3b82f6;"></i> Recent Activity
+      </h3>
+
+      {% if recent_activity %}
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          {% for item in recent_activity %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.1rem; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.9rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;
+                  {% if item.recommendation_type == 'home' %} background: #dbeafe; color: #1e40af;
+                  {% elif item.recommendation_type == 'party' %} background: #ede9fe; color: #6d28d9;
+                  {% else %} background: #fce7f3; color: #be185d; {% endif %}">
+                  {% if item.recommendation_type == 'home' %}<i class="fa-solid fa-house"></i>
+                  {% elif item.recommendation_type == 'party' %}<i class="fa-solid fa-champagne-glasses"></i>
+                  {% else %}<i class="fa-solid fa-gem"></i>{% endif %}
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">
+                    {% if item.recommendation_type == 'home' %}Home Budget Plan
+                    {% elif item.recommendation_type == 'party' %}{{ item.input_summary.get('party_type', 'Party') }} Budget Plan
+                    {% else %}Jewelry Budget Plan ({{ item.input_summary.get('occasion', 'Special') }}){% endif %}
+                  </div>
+                  <div style="font-size: 0.8rem; color: #64748b;">
+                    Budget: <strong>₹{{ "{:,.2f}".format(item.input_summary.get('budget', 0)) }}</strong> &bull; {{ item.timestamp }}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <a href="/history" class="btn-history-view" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                  View Details
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+          <i class="fa-solid fa-clipboard-list" style="font-size: 2.5rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+          <p>No budget plans generated yet. Choose a planner above to start!</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 3rem; padding: 1.5rem;">
+    <div class="footer-bottom" style="border-top: none; padding: 0;">
+      <p>&copy; 2026 PocketSmart AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendation History - PocketSmart AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/dashboard" class="nav-brand">
+      <i class="fa-solid fa-wallet text-sky-400"></i>
+      <span>Pocket<span class="logo-smart">Smart</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+      <li><a href="/home-planner" class="nav-link"><i class="fa-solid fa-couch"></i> Home Planner</a></li>
+      <li><a href="/party-planner" class="nav-link"><i class="fa-solid fa-champagne-glasses"></i> Party Planner</a></li>
+      <li><a href="/jewelry-planner" class="nav-link"><i class="fa-solid fa-gem"></i> Jewelry Planner</a></li>
+      <li><a href="/history" class="nav-link active"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user"></i> {{ user.username }}</span>
+      <a href="/logout" class="btn-nav-signin"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-hero">
+    <h1>Your Recommendation History</h1>
+    <p>View and manage all your previous budget plans, allocations, and product recommendations</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" style="padding-top: 2rem;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+      <h3 style="font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem; color: #1e293b;">
+        <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Recent Recommendations ({{ history|length }})
+      </h3>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn-history-view filter-btn active" onclick="filterHistory('all', this)">All</button>
+        <button class="btn-history-view filter-btn" onclick="filterHistory('home', this)">Home</button>
+        <button class="btn-history-view filter-btn" onclick="filterHistory('party', this)">Party</button>
+        <button class="btn-history-view filter-btn" onclick="filterHistory('jewelry', this)">Jewelry</button>
+      </div>
+    </div>
+
+    {% if history %}
+      <div class="history-grid" id="historyGrid">
+        {% for item in history %}
+          <div class="history-card" data-type="{{ item.recommendation_type }}">
+            
+            <div class="history-card-header">
+              <span class="history-badge {{ item.recommendation_type }}">
+                {% if item.recommendation_type == 'home' %}
+                  <i class="fa-solid fa-house"></i> Home Interior Budget
+                {% elif item.recommendation_type == 'party' %}
+                  <i class="fa-solid fa-champagne-glasses"></i> Party Planning Budget
+                {% else %}
+                  <i class="fa-solid fa-gem"></i> Jewelry Budget
+                {% endif %}
+              </span>
+              <span class="history-timestamp">{{ item.timestamp }}</span>
+            </div>
+
+            <div class="history-budgets">
+              <div class="history-budget-item">
+                <span class="history-budget-label">Total Budget</span>
+                <span class="history-budget-val">₹{{ "{:,.2f}".format(item.input_summary.get('budget', item.full_result.get('total_budget', 0))) }}</span>
+              </div>
+              <div class="history-budget-item">
+                <span class="history-budget-label">Remaining</span>
+                <span class="history-budget-val" style="color: #059669;">₹{{ "{:,.2f}".format(item.full_result.get('remaining_budget', 0)) }}</span>
+              </div>
+            </div>
+
+            <div class="history-card-details">
+              {% if item.recommendation_type == 'home' %}
+                <p><strong>Rooms:</strong> {{ item.input_summary.get('rooms', 'All') }}</p>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem;">
+                  <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">Lights: {{ item.input_summary.get('lights', 0) }}</span>
+                  <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">Fans: {{ item.input_summary.get('fans', 0) }}</span>
+                  <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">Furniture: {{ item.input_summary.get('furniture', 0) }}</span>
+                </div>
+              {% elif item.recommendation_type == 'party' %}
+                <p><strong>Event:</strong> {{ item.input_summary.get('party_type', 'Celebration') }} &bull; Guests: {{ item.input_summary.get('guests', '10') }}</p>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem;">
+                  <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">{{ item.input_summary.get('needs', 'Venue & Catering') }}</span>
+                </div>
+              {% else %}
+                <p><strong>Occasion:</strong> {{ item.input_summary.get('occasion', 'Special') }}</p>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem;">
+                  <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">
+                    Outfit Image: {{ 'Uploaded' if item.input_summary.get('has_image') else 'Style matched' }}
+                  </span>
+                </div>
+              {% endif %}
+            </div>
+
+            <button class="btn-card-action" style="font-size: 0.85rem; padding: 0.5rem;" onclick="viewDetails('{{ item.id }}')">
+              View Full Details <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 0.25rem;"></i>
+            </button>
+
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: 4rem 1.5rem; background: #ffffff; border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">No History Found</h3>
+        <p style="color: #64748b; margin-bottom: 1.5rem;">You haven't generated any budget recommendations yet.</p>
+        <a href="/home-planner" class="btn-hero-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Create Your First Plan</a>
+      </div>
+    {% endif %}
+
+  </main>
+
+  <!-- Details Modal -->
+  <div class="modal-overlay" id="detailsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Recommendation Details</h3>
+        <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div style="text-align: center; padding: 2rem;">
+          <span class="loading-spinner" style="border-color: rgba(37,99,235,0.2); border-top-color: #2563eb;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 3rem; padding: 1.5rem;">
+    <div class="footer-bottom" style="border-top: none; padding: 0;">
+      <p>&copy; 2026 PocketSmart AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function filterHistory(type, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.history-card');
+      cards.forEach(c => {
+        if (type === 'all' || c.dataset.type === type) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    async function viewDetails(id) {
+      const modal = document.getElementById('detailsModal');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalTitle');
+      modal.style.display = 'flex';
+      modalBody.innerHTML = `<div style="text-align: center; padding: 2rem;"><span class="loading-spinner" style="border-color: rgba(37,99,235,0.2); border-top-color: #2563eb;"></span></div>`;
+
+      try {
+        const res = await fetch(`/recommendation-details/${id}`);
+        if (!res.ok) throw new Error('Could not fetch recommendation details');
+        const data = await res.json();
+        
+        modalTitle.textContent = `${data.type.toUpperCase()} Budget Plan (${data.timestamp})`;
+
+        let contentHtml = `
+          <div class="budget-summary-banner" style="margin-bottom: 1.5rem;">
+            <div class="budget-pill">
+              <span class="budget-pill-label">Total Budget</span>
+              <span class="budget-pill-value">₹${(data.full_result.total_budget || data.input.budget || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+            </div>
+            <div class="budget-pill">
+              <span class="budget-pill-label">Remaining Budget</span>
+              <span class="budget-pill-value remaining">₹${(data.full_result.remaining_budget || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+            </div>
+          </div>
+        `;
+
+        if (data.full_result.outfit_analysis) {
+          const oa = data.full_result.outfit_analysis;
+          contentHtml += `
+            <div class="outfit-analysis-box" style="margin-bottom: 1.5rem;">
+              <div class="analysis-item">
+                <span class="analysis-label">Colors</span>
+                <span class="analysis-val">${Array.isArray(oa.colors) ? oa.colors.join(', ') : oa.colors}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="analysis-label">Style</span>
+                <span class="analysis-val">${oa.style || 'Elegant'}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="analysis-label">Formality</span>
+                <span class="analysis-val">${oa.formality || 'Festive'}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        if (data.full_result.budget_breakdown) {
+          data.full_result.budget_breakdown.forEach(cat => {
+            contentHtml += `
+              <div class="category-block" style="margin-bottom: 1rem;">
+                <div class="category-block-header">
+                  <strong>${cat.category}</strong>
+                  <span class="category-allocation-badge">₹${(cat.allocation || 0).toLocaleString('en-IN')}</span>
+                </div>
+                <div class="items-list">
+            `;
+            (cat.items || []).forEach(it => {
+              contentHtml += `
+                <div class="item-row">
+                  <div class="item-info">
+                    <div class="item-name">${it.name}</div>
+                    <div class="item-desc">${it.description}</div>
+                  </div>
+                  <div class="item-meta">
+                    <span class="item-qty-tag">Qty: ${it.quantity || 1}</span>
+                    <span class="item-price-tag">₹${(it.estimated_price || 0).toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              `;
+            });
+            contentHtml += `</div></div>`;
+          });
+        }
+
+        if (data.full_result.jewelry_recommendations) {
+          contentHtml += `
+            <div class="category-block" style="margin-bottom: 1rem;">
+              <div class="category-block-header">
+                <strong>Recommended Jewelry</strong>
+              </div>
+              <div class="items-list">
+          `;
+          data.full_result.jewelry_recommendations.forEach(it => {
+            contentHtml += `
+              <div class="item-row">
+                <div class="item-info">
+                  <div class="item-name">${it.item_type || it.name}</div>
+                  <div class="item-desc">${it.description}</div>
+                  <div style="font-size: 0.8rem; color: #be185d;"><strong>Style:</strong> ${it.style || 'Contemporary'}</div>
+                </div>
+                <div class="item-meta">
+                  <span class="item-price-tag" style="color: #be185d;">₹${(it.estimated_price || 0).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            `;
+          });
+          contentHtml += `</div></div>`;
+        }
+
+        if (data.full_result.additional_suggestions || data.full_result.styling_tips) {
+          const tips = data.full_result.additional_suggestions || data.full_result.styling_tips;
+          contentHtml += `
+            <div class="suggestions-box">
+              <h4 class="suggestions-title"><i class="fa-solid fa-lightbulb"></i> Recommendations & Tips</h4>
+              <ul class="suggestions-list">
+                ${tips.map(t => `<li><i class="fa-solid fa-check"></i> ${t}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        }
+
+        modalBody.innerHTML = contentHtml;
+      } catch (e) {
+        modalBody.innerHTML = `<div class="alert-error">${e.message}</div>`;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('detailsModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('detailsModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>
